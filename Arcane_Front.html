@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArcaneRest - Frontend</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .section {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #ddd;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ArcaneRest - Frontend</h1>
+            <p>Interfaz para consumir la API REST de Arcane Universe</p>
+        </header>
+
+        <div class="tab-container">
+            <div class="tab active" onclick="openTab('personajes')">Personajes</div>
+            <div class="tab" onclick="openTab('organizaciones')">Organizaciones</div>
+            <div class="tab" onclick="openTab('tecnologias')">Tecnologías</div>
+            <div class="tab" onclick="openTab('relaciones')">Relaciones</div>
+            <div class="tab" onclick="openTab('afiliaciones')">Afiliaciones</div>
+            <div class="tab" onclick="openTab('uso-tecnologia')">Uso de Tecnología</div>
+        </div>
+
+        <!-- Sección Personajes -->
+        <div id="personajes" class="tab-content active">
+            <div class="section">
+                <h2>Gestión de Personajes</h2>
+                
+                <div class="form-group">
+                    <h3>Obtener todos los personajes</h3>
+                    <button onclick="getAllPersonajes()">Obtener Personajes</button>
+                    <div class="result" id="allPersonajesResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar personaje por ID</h3>
+                    <label for="personajeId">ID del Personaje:</label>
+                    <input type="number" id="personajeId">
+                    <button onclick="getPersonajeById()">Buscar por ID</button>
+                    <div class="result" id="personajeByIdResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Crear nuevo personaje</h3>
+                    <label for="newPersonajeNombre">Nombre:</label>
+                    <input type="text" id="newPersonajeNombre">
+                    <label for="newPersonajeAlineacion">Alineación:</label>
+                    <input type="text" id="newPersonajeAlineacion">
+                    <label for="newPersonajeDescripcion">Descripción:</label>
+                    <input type="text" id="newPersonajeDescripcion">
+                    <button onclick="createPersonaje()">Crear Personaje</button>
+                    <div class="result" id="createPersonajeResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Actualizar personaje</h3>
+                    <label for="updatePersonajeId">ID del Personaje:</label>
+                    <input type="number" id="updatePersonajeId">
+                    <label for="updatePersonajeNombre">Nombre:</label>
+                    <input type="text" id="updatePersonajeNombre">
+                    <label for="updatePersonajeAlineacion">Alineación:</label>
+                    <input type="text" id="updatePersonajeAlineacion">
+                    <label for="updatePersonajeDescripcion">Descripción:</label>
+                    <input type="text" id="updatePersonajeDescripcion">
+                    <button onclick="updatePersonaje()">Actualizar Personaje</button>
+                    <div class="result" id="updatePersonajeResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Eliminar personaje</h3>
+                    <label for="deletePersonajeId">ID del Personaje:</label>
+                    <input type="number" id="deletePersonajeId">
+                    <button onclick="deletePersonaje()">Eliminar Personaje</button>
+                    <div class="result" id="deletePersonajeResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar personajes por alineación</h3>
+                    <label for="personajeAlineacion">Alineación:</label>
+                    <input type="text" id="personajeAlineacion">
+                    <button onclick="getPersonajesByAlineacion()">Buscar por Alineación</button>
+                    <div class="result" id="personajesByAlineacionResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar personajes por nombre</h3>
+                    <label for="personajeNombreSearch">Nombre:</label>
+                    <input type="text" id="personajeNombreSearch">
+                    <button onclick="searchPersonajesByName()">Buscar por Nombre</button>
+                    <div class="result" id="personajesByNameResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener organizaciones de un personaje</h3>
+                    <label for="personajeOrgId">ID del Personaje:</label>
+                    <input type="number" id="personajeOrgId">
+                    <button onclick="getOrganizacionesByPersonaje()">Obtener Organizaciones</button>
+                    <div class="result" id="organizacionesByPersonajeResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Organizaciones -->
+        <div id="organizaciones" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Organizaciones</h2>
+                
+                <div class="form-group">
+                    <h3>Obtener todas las organizaciones</h3>
+                    <button onclick="getAllOrganizations()">Obtener Organizaciones</button>
+                    <div class="result" id="allOrganizationsResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar organización por ID</h3>
+                    <label for="organizationId">ID de la Organización:</label>
+                    <input type="number" id="organizationId">
+                    <button onclick="getOrganizationById()">Buscar por ID</button>
+                    <div class="result" id="organizationByIdResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Crear nueva organización</h3>
+                    <label for="newOrganizationNombre">Nombre:</label>
+                    <input type="text" id="newOrganizationNombre">
+                    <label for="newOrganizationTipo">Tipo:</label>
+                    <input type="text" id="newOrganizationTipo">
+                    <label for="newOrganizationDescripcion">Descripción:</label>
+                    <input type="text" id="newOrganizationDescripcion">
+                    <button onclick="createOrganization()">Crear Organización</button>
+                    <div class="result" id="createOrganizationResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Actualizar organización</h3>
+                    <label for="updateOrganizationId">ID de la Organización:</label>
+                    <input type="number" id="updateOrganizationId">
+                    <label for="updateOrganizationNombre">Nombre:</label>
+                    <input type="text" id="updateOrganizationNombre">
+                    <label for="updateOrganizationTipo">Tipo:</label>
+                    <input type="text" id="updateOrganizationTipo">
+                    <label for="updateOrganizationDescripcion">Descripción:</label>
+                    <input type="text" id="updateOrganizationDescripcion">
+                    <button onclick="updateOrganization()">Actualizar Organización</button>
+                    <div class="result" id="updateOrganizationResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Eliminar organización</h3>
+                    <label for="deleteOrganizationId">ID de la Organización:</label>
+                    <input type="number" id="deleteOrganizationId">
+                    <button onclick="deleteOrganization()">Eliminar Organización</button>
+                    <div class="result" id="deleteOrganizationResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar organizaciones por tipo</h3>
+                    <label for="organizationTipo">Tipo:</label>
+                    <input type="text" id="organizationTipo">
+                    <button onclick="getOrganizationsByTipo()">Buscar por Tipo</button>
+                    <div class="result" id="organizationsByTipoResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener miembros de una organización</h3>
+                    <label for="organizationMembersId">ID de la Organización:</label>
+                    <input type="number" id="organizationMembersId">
+                    <button onclick="getMiembrosByOrganization()">Obtener Miembros</button>
+                    <div class="result" id="miembrosByOrganizationResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener organizaciones con mínimo de miembros</h3>
+                    <label for="minMembers">Mínimo de miembros:</label>
+                    <input type="number" id="minMembers" value="1">
+                    <button onclick="getOrganizationsWithMinMembers()">Buscar</button>
+                    <div class="result" id="organizationsWithMinMembersResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Tecnologías -->
+        <div id="tecnologias" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Tecnologías</h2>
+                
+                <div class="form-group">
+                    <h3>Obtener todas las tecnologías</h3>
+                    <button onclick="getAllTecnologias()">Obtener Tecnologías</button>
+                    <div class="result" id="allTecnologiasResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar tecnología por ID</h3>
+                    <label for="tecnologiaId">ID de la Tecnología:</label>
+                    <input type="number" id="tecnologiaId">
+                    <button onclick="getTecnologiaById()">Buscar por ID</button>
+                    <div class="result" id="tecnologiaByIdResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Crear nueva tecnología</h3>
+                    <label for="newTecnologiaNombre">Nombre:</label>
+                    <input type="text" id="newTecnologiaNombre">
+                    <label for="newTecnologiaTipo">Tipo:</label>
+                    <input type="text" id="newTecnologiaTipo">
+                    <label for="newTecnologiaDescripcion">Descripción:</label>
+                    <input type="text" id="newTecnologiaDescripcion">
+                    <button onclick="createTecnologia()">Crear Tecnología</button>
+                    <div class="result" id="createTecnologiaResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Actualizar tecnología</h3>
+                    <label for="updateTecnologiaId">ID de la Tecnología:</label>
+                    <input type="number" id="updateTecnologiaId">
+                    <label for="updateTecnologiaNombre">Nombre:</label>
+                    <input type="text" id="updateTecnologiaNombre">
+                    <label for="updateTecnologiaTipo">Tipo:</label>
+                    <input type="text" id="updateTecnologiaTipo">
+                    <label for="updateTecnologiaDescripcion">Descripción:</label>
+                    <input type="text" id="updateTecnologiaDescripcion">
+                    <button onclick="updateTecnologia()">Actualizar Tecnología</button>
+                    <div class="result" id="updateTecnologiaResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Eliminar tecnología</h3>
+                    <label for="deleteTecnologiaId">ID de la Tecnología:</label>
+                    <input type="number" id="deleteTecnologiaId">
+                    <button onclick="deleteTecnologia()">Eliminar Tecnología</button>
+                    <div class="result" id="deleteTecnologiaResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar tecnologías por tipo</h3>
+                    <label for="tecnologiaTipo">Tipo:</label>
+                    <input type="text" id="tecnologiaTipo">
+                    <button onclick="getTecnologiasByTipo()">Buscar por Tipo</button>
+                    <div class="result" id="tecnologiasByTipoResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Buscar tecnologías por nombre</h3>
+                    <label for="tecnologiaNombreSearch">Nombre:</label>
+                    <input type="text" id="tecnologiaNombreSearch">
+                    <button onclick="searchTecnologiasByName()">Buscar por Nombre</button>
+                    <div class="result" id="tecnologiasByNameResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Relaciones -->
+        <div id="relaciones" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Relaciones entre Personajes</h2>
+                
+                <div class="form-group">
+                    <h3>Crear nueva relación</h3>
+                    <label for="relacionPersonajeA">ID Personaje A:</label>
+                    <input type="number" id="relacionPersonajeA">
+                    <label for="relacionPersonajeB">ID Personaje B:</label>
+                    <input type="number" id="relacionPersonajeB">
+                    <label for="relacionTipo">Tipo de Relación:</label>
+                    <input type="text" id="relacionTipo">
+                    <button onclick="createRelacion()">Crear Relación</button>
+                    <div class="result" id="createRelacionResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener relaciones de un personaje</h3>
+                    <label for="relacionesPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="relacionesPersonajeId">
+                    <button onclick="getRelacionesByPersonaje()">Obtener Relaciones</button>
+                    <div class="result" id="relacionesByPersonajeResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener relaciones de un personaje por tipo</h3>
+                    <label for="relacionesPersonajeTipoId">ID del Personaje:</label>
+                    <input type="number" id="relacionesPersonajeTipoId">
+                    <label for="relacionesTipo">Tipo de Relación:</label>
+                    <input type="text" id="relacionesTipo">
+                    <button onclick="getRelacionesByPersonajeAndTipo()">Buscar Relaciones</button>
+                    <div class="result" id="relacionesByPersonajeAndTipoResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Eliminar relación</h3>
+                    <label for="deleteRelacionPersonajeA">ID Personaje A:</label>
+                    <input type="number" id="deleteRelacionPersonajeA">
+                    <label for="deleteRelacionPersonajeB">ID Personaje B:</label>
+                    <input type="number" id="deleteRelacionPersonajeB">
+                    <button onclick="deleteRelacion()">Eliminar Relación</button>
+                    <div class="result" id="deleteRelacionResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Afiliaciones -->
+        <div id="afiliaciones" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Afiliaciones a Organizaciones</h2>
+                
+                <div class="form-group">
+                    <h3>Crear nueva afiliación</h3>
+                    <label for="affiliationPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="affiliationPersonajeId">
+                    <label for="affiliationOrganizationId">ID de la Organización:</label>
+                    <input type="number" id="affiliationOrganizationId">
+                    <label for="affiliationRol">Rol:</label>
+                    <input type="text" id="affiliationRol">
+                    <label for="affiliationFechaIngreso">Fecha de Ingreso (YYYY-MM-DD):</label>
+                    <input type="text" id="affiliationFechaIngreso">
+                    <button onclick="createAffiliation()">Crear Afiliación</button>
+                    <div class="result" id="createAffiliationResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener afiliaciones de un personaje</h3>
+                    <label for="affiliationsByPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="affiliationsByPersonajeId">
+                    <button onclick="getAffiliationsByPersonaje()">Obtener Afiliaciones</button>
+                    <div class="result" id="affiliationsByPersonajeResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener afiliaciones de una organización</h3>
+                    <label for="affiliationsByOrganizationId">ID de la Organización:</label>
+                    <input type="number" id="affiliationsByOrganizationId">
+                    <button onclick="getAffiliationsByOrganization()">Obtener Afiliaciones</button>
+                    <div class="result" id="affiliationsByOrganizationResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener miembros de una organización por rol</h3>
+                    <label for="membersByRoleOrgId">ID de la Organización:</label>
+                    <input type="number" id="membersByRoleOrgId">
+                    <label for="membersByRole">Rol:</label>
+                    <input type="text" id="membersByRole">
+                    <button onclick="getMembersByRole()">Buscar Miembros</button>
+                    <div class="result" id="membersByRoleResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Actualizar rol en afiliación</h3>
+                    <label for="updateRolePersonajeId">ID del Personaje:</label>
+                    <input type="number" id="updateRolePersonajeId">
+                    <label for="updateRoleOrganizationId">ID de la Organización:</label>
+                    <input type="number" id="updateRoleOrganizationId">
+                    <label for="updateRoleNewRole">Nuevo Rol:</label>
+                    <input type="text" id="updateRoleNewRole">
+                    <button onclick="updateAffiliationRole()">Actualizar Rol</button>
+                    <div class="result" id="updateAffiliationRoleResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Eliminar afiliación</h3>
+                    <label for="deleteAffiliationPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="deleteAffiliationPersonajeId">
+                    <label for="deleteAffiliationOrganizationId">ID de la Organización:</label>
+                    <input type="number" id="deleteAffiliationOrganizationId">
+                    <button onclick="deleteAffiliation()">Eliminar Afiliación</button>
+                    <div class="result" id="deleteAffiliationResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Uso de Tecnología -->
+        <div id="uso-tecnologia" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Uso de Tecnología por Personajes</h2>
+                
+                <div class="form-group">
+                    <h3>Crear nuevo uso de tecnología</h3>
+                    <label for="usoPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="usoPersonajeId">
+                    <label for="usoTecnologiaId">ID de la Tecnología:</label>
+                    <input type="number" id="usoTecnologiaId">
+                    <button onclick="createUsoTecnologia()">Crear Uso</button>
+                    <div class="result" id="createUsoTecnologiaResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener tecnologías de un personaje</h3>
+                    <label for="tecnologiasByPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="tecnologiasByPersonajeId">
+                    <button onclick="getTecnologiasByPersonaje()">Obtener Tecnologías</button>
+                    <div class="result" id="tecnologiasByPersonajeResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Obtener personajes que usan una tecnología</h3>
+                    <label for="personajesByTecnologiaId">ID de la Tecnología:</label>
+                    <input type="number" id="personajesByTecnologiaId">
+                    <button onclick="getPersonajesByTecnologia()">Obtener Personajes</button>
+                    <div class="result" id="personajesByTecnologiaResult"></div>
+                </div>
+                
+                <div class="form-group">
+                    <h3>Eliminar uso de tecnología</h3>
+                    <label for="deleteUsoPersonajeId">ID del Personaje:</label>
+                    <input type="number" id="deleteUsoPersonajeId">
+                    <label for="deleteUsoTecnologiaId">ID de la Tecnología:</label>
+                    <input type="number" id="deleteUsoTecnologiaId">
+                    <button onclick="deleteUsoTecnologia()">Eliminar Uso</button>
+                    <div class="result" id="deleteUsoTecnologiaResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para cambiar entre pestañas
+        function openTab(tabName) {
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Función para mostrar resultados en formato legible
+        function displayResult(elementId, data) {
+            const resultElement = document.getElementById(elementId);
+            if (typeof data === 'object') {
+                resultElement.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } else {
+                resultElement.innerHTML = data;
+            }
+        }
+
+        // Función para manejar errores de fetch
+        async function handleFetchResponse(response) {
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Error en la solicitud');
+            }
+            return response.json();
+        }
+
+        // Configuración base de la API
+        const API_BASE_URL = 'http://localhost:8080/api';
+
+        // ========== Funciones para Personajes ==========
+        async function getAllPersonajes() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes`);
+                const data = await handleFetchResponse(response);
+                displayResult('allPersonajesResult', data);
+            } catch (error) {
+                displayResult('allPersonajesResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getPersonajeById() {
+            const id = document.getElementById('personajeId').value;
+            if (!id) {
+                displayResult('personajeByIdResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes/${id}`);
+                const data = await handleFetchResponse(response);
+                displayResult('personajeByIdResult', data);
+            } catch (error) {
+                displayResult('personajeByIdResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function createPersonaje() {
+            const personaje = {
+                nombre: document.getElementById('newPersonajeNombre').value,
+                alineacion: document.getElementById('newPersonajeAlineacion').value,
+                descripcion: document.getElementById('newPersonajeDescripcion').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(personaje)
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('createPersonajeResult', data);
+            } catch (error) {
+                displayResult('createPersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function updatePersonaje() {
+            const id = document.getElementById('updatePersonajeId').value;
+            if (!id) {
+                displayResult('updatePersonajeResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            const personaje = {
+                nombre: document.getElementById('updatePersonajeNombre').value,
+                alineacion: document.getElementById('updatePersonajeAlineacion').value,
+                descripcion: document.getElementById('updatePersonajeDescripcion').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(personaje)
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('updatePersonajeResult', data);
+            } catch (error) {
+                displayResult('updatePersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function deletePersonaje() {
+            const id = document.getElementById('deletePersonajeId').value;
+            if (!id) {
+                displayResult('deletePersonajeResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    displayResult('deletePersonajeResult', 'Personaje eliminado exitosamente');
+                } else {
+                    throw new Error('Error al eliminar el personaje');
+                }
+            } catch (error) {
+                displayResult('deletePersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getPersonajesByAlineacion() {
+            const alineacion = document.getElementById('personajeAlineacion').value;
+            if (!alineacion) {
+                displayResult('personajesByAlineacionResult', 'Por favor ingrese una alineación');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes/alineacion/${alineacion}`);
+                const data = await handleFetchResponse(response);
+                displayResult('personajesByAlineacionResult', data);
+            } catch (error) {
+                displayResult('personajesByAlineacionResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function searchPersonajesByName() {
+            const nombre = document.getElementById('personajeNombreSearch').value;
+            if (!nombre) {
+                displayResult('personajesByNameResult', 'Por favor ingrese un nombre');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes/search?nombre=${nombre}`);
+                const data = await handleFetchResponse(response);
+                displayResult('personajesByNameResult', data);
+            } catch (error) {
+                displayResult('personajesByNameResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getOrganizacionesByPersonaje() {
+            const id = document.getElementById('personajeOrgId').value;
+            if (!id) {
+                displayResult('organizacionesByPersonajeResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/personajes/${id}/organizaciones`);
+                const data = await handleFetchResponse(response);
+                displayResult('organizacionesByPersonajeResult', data);
+            } catch (error) {
+                displayResult('organizacionesByPersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        // ========== Funciones para Organizaciones ==========
+        async function getAllOrganizations() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations`);
+                const data = await handleFetchResponse(response);
+                displayResult('allOrganizationsResult', data);
+            } catch (error) {
+                displayResult('allOrganizationsResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getOrganizationById() {
+            const id = document.getElementById('organizationId').value;
+            if (!id) {
+                displayResult('organizationByIdResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations/${id}`);
+                const data = await handleFetchResponse(response);
+                displayResult('organizationByIdResult', data);
+            } catch (error) {
+                displayResult('organizationByIdResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function createOrganization() {
+            const organization = {
+                nombre: document.getElementById('newOrganizationNombre').value,
+                tipo: document.getElementById('newOrganizationTipo').value,
+                descripcion: document.getElementById('newOrganizationDescripcion').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(organization)
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('createOrganizationResult', data);
+            } catch (error) {
+                displayResult('createOrganizationResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function updateOrganization() {
+            const id = document.getElementById('updateOrganizationId').value;
+            if (!id) {
+                displayResult('updateOrganizationResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            const organization = {
+                nombre: document.getElementById('updateOrganizationNombre').value,
+                tipo: document.getElementById('updateOrganizationTipo').value,
+                descripcion: document.getElementById('updateOrganizationDescripcion').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(organization)
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('updateOrganizationResult', data);
+            } catch (error) {
+                displayResult('updateOrganizationResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function deleteOrganization() {
+            const id = document.getElementById('deleteOrganizationId').value;
+            if (!id) {
+                displayResult('deleteOrganizationResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    displayResult('deleteOrganizationResult', 'Organización eliminada exitosamente');
+                } else {
+                    throw new Error('Error al eliminar la organización');
+                }
+            } catch (error) {
+                displayResult('deleteOrganizationResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getOrganizationsByTipo() {
+            const tipo = document.getElementById('organizationTipo').value;
+            if (!tipo) {
+                displayResult('organizationsByTipoResult', 'Por favor ingrese un tipo');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations/tipo/${tipo}`);
+                const data = await handleFetchResponse(response);
+                displayResult('organizationsByTipoResult', data);
+            } catch (error) {
+                displayResult('organizationsByTipoResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getMiembrosByOrganization() {
+            const id = document.getElementById('organizationMembersId').value;
+            if (!id) {
+                displayResult('miembrosByOrganizationResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations/${id}/miembros`);
+                const data = await handleFetchResponse(response);
+                displayResult('miembrosByOrganizationResult', data);
+            } catch (error) {
+                displayResult('miembrosByOrganizationResult', 'Error: ' + error.message);
+            }
+        }
+
+        // ========== Funciones para Tecnologías ==========
+        async function getAllTecnologias() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias`);
+                const data = await handleFetchResponse(response);
+                displayResult('allTecnologiasResult', data);
+            } catch (error) {
+                displayResult('allTecnologiasResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getTecnologiaById() {
+            const id = document.getElementById('tecnologiaId').value;
+            if (!id) {
+                displayResult('tecnologiaByIdResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias/${id}`);
+                const data = await handleFetchResponse(response);
+                displayResult('tecnologiaByIdResult', data);
+            } catch (error) {
+                displayResult('tecnologiaByIdResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function createTecnologia() {
+            const tecnologia = {
+                nombre: document.getElementById('newTecnologiaNombre').value,
+                tipo: document.getElementById('newTecnologiaTipo').value,
+                descripcion: document.getElementById('newTecnologiaDescripcion').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tecnologia)
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('createTecnologiaResult', data);
+            } catch (error) {
+                displayResult('createTecnologiaResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function updateTecnologia() {
+            const id = document.getElementById('updateTecnologiaId').value;
+            if (!id) {
+                displayResult('updateTecnologiaResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            const tecnologia = {
+                nombre: document.getElementById('updateTecnologiaNombre').value,
+                tipo: document.getElementById('updateTecnologiaTipo').value,
+                descripcion: document.getElementById('updateTecnologiaDescripcion').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(tecnologia)
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('updateTecnologiaResult', data);
+            } catch (error) {
+                displayResult('updateTecnologiaResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function deleteTecnologia() {
+            const id = document.getElementById('deleteTecnologiaId').value;
+            if (!id) {
+                displayResult('deleteTecnologiaResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    displayResult('deleteTecnologiaResult', 'Tecnología eliminada exitosamente');
+                } else {
+                    throw new Error('Error al eliminar la tecnología');
+                }
+            } catch (error) {
+                displayResult('deleteTecnologiaResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getTecnologiasByTipo() {
+            const tipo = document.getElementById('tecnologiaTipo').value;
+            if (!tipo) {
+                displayResult('tecnologiasByTipoResult', 'Por favor ingrese un tipo');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias/tipo/${tipo}`);
+                const data = await handleFetchResponse(response);
+                displayResult('tecnologiasByTipoResult', data);
+            } catch (error) {
+                displayResult('tecnologiasByTipoResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function searchTecnologiasByName() {
+            const nombre = document.getElementById('tecnologiaNombreSearch').value;
+            if (!nombre) {
+                displayResult('tecnologiasByNameResult', 'Por favor ingrese un nombre');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/tecnologias/search?nombre=${nombre}`);
+                const data = await handleFetchResponse(response);
+                displayResult('tecnologiasByNameResult', data);
+            } catch (error) {
+                displayResult('tecnologiasByNameResult', 'Error: ' + error.message);
+            }
+        }
+
+        // ========== Funciones para Relaciones ==========
+        async function createRelacion() {
+            const idPersonajeA = document.getElementById('relacionPersonajeA').value;
+            const idPersonajeB = document.getElementById('relacionPersonajeB').value;
+            const tipoRelacion = document.getElementById('relacionTipo').value;
+            
+            if (!idPersonajeA || !idPersonajeB || !tipoRelacion) {
+                displayResult('createRelacionResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/relaciones?` + new URLSearchParams({
+                    idPersonajeA,
+                    idPersonajeB,
+                    tipoRelacion
+                }), {
+                    method: 'POST'
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('createRelacionResult', data);
+            } catch (error) {
+                displayResult('createRelacionResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getRelacionesByPersonaje() {
+            const idPersonaje = document.getElementById('relacionesPersonajeId').value;
+            if (!idPersonaje) {
+                displayResult('relacionesByPersonajeResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/relaciones/personaje/${idPersonaje}`);
+                const data = await handleFetchResponse(response);
+                displayResult('relacionesByPersonajeResult', data);
+            } catch (error) {
+                displayResult('relacionesByPersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getRelacionesByPersonajeAndTipo() {
+            const idPersonaje = document.getElementById('relacionesPersonajeTipoId').value;
+            const tipo = document.getElementById('relacionesTipo').value;
+            
+            if (!idPersonaje || !tipo) {
+                displayResult('relacionesByPersonajeAndTipoResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/relaciones/personaje/${idPersonaje}/tipo/${tipo}`);
+                const data = await handleFetchResponse(response);
+                displayResult('relacionesByPersonajeAndTipoResult', data);
+            } catch (error) {
+                displayResult('relacionesByPersonajeAndTipoResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function deleteRelacion() {
+            const idPersonajeA = document.getElementById('deleteRelacionPersonajeA').value;
+            const idPersonajeB = document.getElementById('deleteRelacionPersonajeB').value;
+            
+            if (!idPersonajeA || !idPersonajeB) {
+                displayResult('deleteRelacionResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/relaciones?` + new URLSearchParams({
+                    idPersonajeA,
+                    idPersonajeB
+                }), {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    displayResult('deleteRelacionResult', 'Relación eliminada exitosamente');
+                } else {
+                    throw new Error('Error al eliminar la relación');
+                }
+            } catch (error) {
+                displayResult('deleteRelacionResult', 'Error: ' + error.message);
+            }
+        }
+
+        // ========== Funciones para Afiliaciones ==========
+        async function createAffiliation() {
+            const personajeId = document.getElementById('affiliationPersonajeId').value;
+            const organizationId = document.getElementById('affiliationOrganizationId').value;
+            const rol = document.getElementById('affiliationRol').value;
+            const fechaIngreso = document.getElementById('affiliationFechaIngreso').value;
+            
+            if (!personajeId || !organizationId || !rol || !fechaIngreso) {
+                displayResult('createAffiliationResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/affiliations?` + new URLSearchParams({
+                    personajeId,
+                    organizationId,
+                    rol,
+                    fechaIngreso
+                }), {
+                    method: 'POST'
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('createAffiliationResult', data);
+            } catch (error) {
+                displayResult('createAffiliationResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getAffiliationsByPersonaje() {
+            const personajeId = document.getElementById('affiliationsByPersonajeId').value;
+            if (!personajeId) {
+                displayResult('affiliationsByPersonajeResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/affiliations/personaje/${personajeId}`);
+                const data = await handleFetchResponse(response);
+                displayResult('affiliationsByPersonajeResult', data);
+            } catch (error) {
+                displayResult('affiliationsByPersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getAffiliationsByOrganization() {
+            const organizationId = document.getElementById('affiliationsByOrganizationId').value;
+            if (!organizationId) {
+                displayResult('affiliationsByOrganizationResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/affiliations/organization/${organizationId}`);
+                const data = await handleFetchResponse(response);
+                displayResult('affiliationsByOrganizationResult', data);
+            } catch (error) {
+                displayResult('affiliationsByOrganizationResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getMembersByRole() {
+            const organizationId = document.getElementById('membersByRoleOrgId').value;
+            const rol = document.getElementById('membersByRole').value;
+            
+            if (!organizationId || !rol) {
+                displayResult('membersByRoleResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/affiliations/organization/${organizationId}/rol/${rol}`);
+                const data = await handleFetchResponse(response);
+                displayResult('membersByRoleResult', data);
+            } catch (error) {
+                displayResult('membersByRoleResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function updateAffiliationRole() {
+            const personajeId = document.getElementById('updateRolePersonajeId').value;
+            const organizationId = document.getElementById('updateRoleOrganizationId').value;
+            const newRole = document.getElementById('updateRoleNewRole').value;
+            
+            if (!personajeId || !organizationId || !newRole) {
+                displayResult('updateAffiliationRoleResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/affiliations/update-rol?` + new URLSearchParams({
+                    personajeId,
+                    organizationId,
+                    newRole
+                }), {
+                    method: 'PUT'
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('updateAffiliationRoleResult', data);
+            } catch (error) {
+                displayResult('updateAffiliationRoleResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function deleteAffiliation() {
+            const personajeId = document.getElementById('deleteAffiliationPersonajeId').value;
+            const organizationId = document.getElementById('deleteAffiliationOrganizationId').value;
+            
+            if (!personajeId || !organizationId) {
+                displayResult('deleteAffiliationResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/affiliations?` + new URLSearchParams({
+                    personajeId,
+                    organizationId
+                }), {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    displayResult('deleteAffiliationResult', 'Afiliación eliminada exitosamente');
+                } else {
+                    throw new Error('Error al eliminar la afiliación');
+                }
+            } catch (error) {
+                displayResult('deleteAffiliationResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getOrganizationsWithMinMembers() {
+            const minMembers = document.getElementById('minMembers').value;
+            if (!minMembers) {
+                displayResult('organizationsWithMinMembersResult', 'Por favor ingrese un valor');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/organizations/min-miembros?minMembers=${minMembers}`);
+                const data = await handleFetchResponse(response);
+                displayResult('organizationsWithMinMembersResult', data);
+            } catch (error) {
+                displayResult('organizationsWithMinMembersResult', 'Error: ' + error.message);
+            }
+        }
+
+        // ========== Funciones para Uso de Tecnología ==========
+        async function createUsoTecnologia() {
+            const personajeId = document.getElementById('usoPersonajeId').value;
+            const tecnologiaId = document.getElementById('usoTecnologiaId').value;
+            
+            if (!personajeId || !tecnologiaId) {
+                displayResult('createUsoTecnologiaResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/uso-tecnologia?` + new URLSearchParams({
+                    personajeId,
+                    tecnologiaId
+                }), {
+                    method: 'POST'
+                });
+                const data = await handleFetchResponse(response);
+                displayResult('createUsoTecnologiaResult', data);
+            } catch (error) {
+                displayResult('createUsoTecnologiaResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getTecnologiasByPersonaje() {
+            const personajeId = document.getElementById('tecnologiasByPersonajeId').value;
+            if (!personajeId) {
+                displayResult('tecnologiasByPersonajeResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/uso-tecnologia/personaje/${personajeId}`);
+                const data = await handleFetchResponse(response);
+                displayResult('tecnologiasByPersonajeResult', data);
+            } catch (error) {
+                displayResult('tecnologiasByPersonajeResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function getPersonajesByTecnologia() {
+            const tecnologiaId = document.getElementById('personajesByTecnologiaId').value;
+            if (!tecnologiaId) {
+                displayResult('personajesByTecnologiaResult', 'Por favor ingrese un ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/uso-tecnologia/tecnologia/${tecnologiaId}`);
+                const data = await handleFetchResponse(response);
+                displayResult('personajesByTecnologiaResult', data);
+            } catch (error) {
+                displayResult('personajesByTecnologiaResult', 'Error: ' + error.message);
+            }
+        }
+
+        async function deleteUsoTecnologia() {
+            const personajeId = document.getElementById('deleteUsoPersonajeId').value;
+            const tecnologiaId = document.getElementById('deleteUsoTecnologiaId').value;
+            
+            if (!personajeId || !tecnologiaId) {
+                displayResult('deleteUsoTecnologiaResult', 'Por favor complete todos los campos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/uso-tecnologia?` + new URLSearchParams({
+                    personajeId,
+                    tecnologiaId
+                }), {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    displayResult('deleteUsoTecnologiaResult', 'Uso de tecnología eliminado exitosamente');
+                } else {
+                    throw new Error('Error al eliminar el uso de tecnología');
+                }
+            } catch (error) {
+                displayResult('deleteUsoTecnologiaResult', 'Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
